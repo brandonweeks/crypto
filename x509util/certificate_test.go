@@ -128,6 +128,16 @@ func TestNewCertificate(t *testing.T) {
 		want    *Certificate
 		wantErr bool
 	}{
+		{"okClient", args{cr, []Option{WithTemplateFile("./testdata/client.tpl", TemplateData{})}}, &Certificate{
+			PermanentIdentifiers: []PermanentIdentifier{
+				PermanentIdentifier{
+					Value:    "12345",
+					Assigner: "orange",
+				},
+			},
+			PublicKey:          priv.Public(),
+			PublicKeyAlgorithm: x509.Ed25519,
+		}, false},
 		{"okSimple", args{cr, nil}, &Certificate{
 			Subject:        Subject{CommonName: "commonName"},
 			DNSNames:       []string{"foo.com"},

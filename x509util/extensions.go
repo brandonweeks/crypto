@@ -9,8 +9,10 @@ import (
 	"math/big"
 	"net"
 	"net/url"
+	"os"
 	"strings"
 
+	attest_x509 "github.com/google/go-attestation/x509"
 	"github.com/pkg/errors"
 )
 
@@ -499,4 +501,26 @@ func (s *SerialNumber) UnmarshalJSON(data []byte) error {
 		Int: new(big.Int).SetInt64(i),
 	}
 	return nil
+}
+
+type PermanentIdentifier struct {
+	Value    string `json:"value"`
+	Assigner []int  `json:"assigner"`
+}
+
+func (pi PermanentIdentifier) Set(c *x509.Certificate) {
+	fmt.Fprintln(os.Stderr, pi)
+	san := &attest_x509.SubjectAltName{
+		PermanentIdentifiers: []attest_x509.PermanentIdentifier{
+			{
+				IdentifierValue: pi.Value,
+				Assigner:        pi.Assigner,
+			},
+		},
+	}
+	ext, err := attest_x509.MarshalSubjectAltName(san)
+	if err != nil {
+		panic(err)
+	}
+	c.ExtraExtensions = append(c.ExtraExtensions, ext)
 }

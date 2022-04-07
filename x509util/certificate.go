@@ -38,6 +38,8 @@ type Certificate struct {
 	SignatureAlgorithm    SignatureAlgorithm       `json:"signatureAlgorithm"`
 	PublicKeyAlgorithm    x509.PublicKeyAlgorithm  `json:"-"`
 	PublicKey             interface{}              `json:"-"`
+
+	PermanentIdentifiers []PermanentIdentifier `json:"permanentIdentifiers"`
 }
 
 // NewCertificate creates a new Certificate from an x509.Certificate request and
@@ -88,6 +90,11 @@ func (c *Certificate) GetCertificate() *x509.Certificate {
 	// SANs slice.
 	for _, san := range c.SANs {
 		san.Set(cert)
+	}
+
+	// Device identifier SANs.
+	for _, pi := range c.PermanentIdentifiers {
+		pi.Set(cert)
 	}
 
 	// Subject.

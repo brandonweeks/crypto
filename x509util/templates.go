@@ -14,6 +14,9 @@ const (
 	CertificateRequestKey = "CR"
 	AuthorizationCrtKey   = "AuthorizationCrt"
 	AuthorizationChainKey = "AuthorizationChain"
+
+	// Client certificates.
+	PermanentIdentifiersKey = "PermanentIdentifiers"
 )
 
 // TemplateError represents an error in a template produced by the fail
@@ -99,6 +102,10 @@ func (t TemplateData) SetAuthorizationCertificate(crt interface{}) {
 // template. These certificates are generally present in a token header.
 func (t TemplateData) SetAuthorizationCertificateChain(chain interface{}) {
 	t.Set(AuthorizationChainKey, chain)
+}
+
+func (t TemplateData) SetPermanentIdentifiers(ids []PermanentIdentifier) {
+	t.Set(PermanentIdentifiersKey, ids)
 }
 
 // SetCertificateRequest sets the given certificate request in the insecure
